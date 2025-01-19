@@ -3,6 +3,16 @@ entries:
   glance:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-01-19T21:23:29.868315128Z"
+    description: A Helm chart for Kubernetes
+    digest: 7476c3c5426e30b533479ced3886c223c61ac0d8ba36903c37af2bd2d5db3fc0
+    name: glance
+    type: application
+    urls:
+    - https://github.com/arch-err/charts/releases/download/glance-1.0.0/glance-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-01-19T21:19:16.218449421Z"
     description: A Helm chart for Kubernetes
     digest: 3d499e894ee6df5160cab1360672c2a761320e3e507c64aeb0ac7aabd3bf1d62
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/arch-err/charts/releases/download/glance-0.1.0/glance-0.1.0.tgz
     version: 0.1.0
-generated: "2025-01-19T21:19:16.218455873Z"
+generated: "2025-01-19T21:23:29.868327601Z"
