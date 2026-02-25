@@ -1,0 +1,13 @@
+apiVersion: v2
+name: kadalu
+icon: https://kadalu.io/static/css/logo.png
+description: Contains chart for deploying Kadalu Operator
+type: application
+# Value of 'version' will be replaced with correct version on part of release
+version: 1.3.0
+dependencies:
+  - name: common
+    repository: file://charts/common
+  - name: operator
+    repository: file://charts/operator
+    condition: operator.enabled
