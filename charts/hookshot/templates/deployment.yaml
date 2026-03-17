@@ -29,6 +29,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["node", "/bin/matrix-hookshot/App/BridgeApp.js"]
           args: ["/data/config.yml", "/data/registration.yml"]
           ports:
             - name: appservice
