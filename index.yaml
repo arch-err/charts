@@ -24,6 +24,16 @@ entries:
   hookshot:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-03-17T20:06:17.168209697Z"
+    description: A Helm chart for Matrix Hookshot - webhook bridge for Matrix
+    digest: 28acc9cec821c30573aee243d808e3d9613a1ed1e683373207f4f46f848d06c6
+    name: hookshot
+    type: application
+    urls:
+    - https://github.com/arch-err/charts/releases/download/hookshot-0.1.1/hookshot-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-03-17T19:52:55.972269755Z"
     description: A Helm chart for Matrix Hookshot - webhook bridge for Matrix
     digest: 942c80391ef9769308385ebdbb6be13aecb97387f8678fff0593b570295f9284
@@ -170,4 +180,4 @@ entries:
     urls:
     - https://github.com/arch-err/charts/releases/download/n8n-1.13.4-fixed-port/n8n-1.13.4-fixed-port.tgz
     version: 1.13.4-fixed-port
-generated: "2026-03-17T19:52:55.972284303Z"
+generated: "2026-03-17T20:06:17.168225647Z"
