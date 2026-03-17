@@ -21,6 +21,17 @@ entries:
     urls:
     - https://github.com/arch-err/charts/releases/download/glance-0.1.0/glance-0.1.0.tgz
     version: 0.1.0
+  hookshot:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-03-17T19:52:55.972269755Z"
+    description: A Helm chart for Matrix Hookshot - webhook bridge for Matrix
+    digest: 942c80391ef9769308385ebdbb6be13aecb97387f8678fff0593b570295f9284
+    name: hookshot
+    type: application
+    urls:
+    - https://github.com/arch-err/charts/releases/download/hookshot-0.1.0/hookshot-0.1.0.tgz
+    version: 0.1.0
   kadalu:
   - apiVersion: v2
     created: "2026-02-28T16:11:55.502146058Z"
@@ -159,4 +170,4 @@ entries:
     urls:
     - https://github.com/arch-err/charts/releases/download/n8n-1.13.4-fixed-port/n8n-1.13.4-fixed-port.tgz
     version: 1.13.4-fixed-port
-generated: "2026-02-28T16:11:55.502155856Z"
+generated: "2026-03-17T19:52:55.972284303Z"
