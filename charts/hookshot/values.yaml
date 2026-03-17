@@ -1,0 +1,71 @@
+replicaCount: 1
+
+image:
+  repository: halfshot/matrix-hookshot
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  appservicePort: 9993
+  webhookPort: 9000
+  metricsPort: null
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+
+# RSA passkey for token encryption
+# Generate with: openssl genpkey -out passkey.pem -outform PEM -algorithm RSA -pkeyopt rsa_keygen_bits:4096
+passkey: ""
+
+# Hookshot configuration
+# Ref: https://matrix-org.github.io/matrix-hookshot/latest/setup.html
+config:
+  bridge:
+    domain: matrix.apps.home
+    url: http://matrix-synapse:8008
+    mediaUrl: https://matrix.apps.home
+    port: 9993
+    bindAddress: 0.0.0.0
+  logging:
+    level: info
+    colorize: false
+    json: false
+    timestampFormat: HH:mm:ss:SSS
+  listeners:
+    - port: 9000
+      bindAddress: 0.0.0.0
+      resources:
+        - webhooks
+  passFile: /data/passkey.pem
+  generic:
+    enabled: true
+    urlPrefix: https://hookshot.apps.home/webhook/
+    allowJsTransformationFunctions: false
+    userIdPrefix: _hookshot_
+
+# Appservice registration
+# Ref: https://matrix-org.github.io/matrix-hookshot/latest/setup.html
+registration:
+  id: matrix-hookshot
+  as_token: ""
+  hs_token: ""
+  url: "http://hookshot:9993"
+  sender_localpart: hookshot
+  rate_limited: false
+  namespaces:
+    users:
+      - regex: "@_hookshot_.*:matrix\\.apps\\.home"
+        exclusive: true
+    rooms: []
+    aliases: []

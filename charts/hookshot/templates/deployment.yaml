@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hookshot.fullname" . }}
+  labels:
+    {{- include "hookshot.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hookshot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ .Values.config | toYaml | sha256sum }}
+        checksum/registration: {{ .Values.registration | toYaml | sha256sum }}
+      labels:
+        {{- include "hookshot.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["node"]
+          args: ["lib/App/BridgeApp.js", "--config", "/data/config.yml", "--registration", "/data/registration.yml"]
+          ports:
+            - name: appservice
+              containerPort: {{ .Values.service.appservicePort }}
+              protocol: TCP
+            - name: webhooks
+              containerPort: {{ .Values.service.webhookPort }}
+              protocol: TCP
+            {{- if .Values.service.metricsPort }}
+            - name: metrics
+              containerPort: {{ .Values.service.metricsPort }}
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: webhooks
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: webhooks
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /data/config.yml
+              subPath: config.yml
+              readOnly: true
+            - name: registration
+              mountPath: /data/registration.yml
+              subPath: registration.yml
+              readOnly: true
+            - name: passkey
+              mountPath: /data/passkey.pem
+              subPath: passkey.pem
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "hookshot.fullname" . }}-config
+        - name: registration
+          configMap:
+            name: {{ include "hookshot.fullname" . }}-registration
+        - name: passkey
+          secret:
+            secretName: {{ include "hookshot.fullname" . }}-passkey
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

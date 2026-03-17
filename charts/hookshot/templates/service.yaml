@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hookshot.fullname" . }}
+  labels:
+    {{- include "hookshot.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.appservicePort }}
+      targetPort: appservice
+      protocol: TCP
+      name: appservice
+    - port: {{ .Values.service.webhookPort }}
+      targetPort: webhooks
+      protocol: TCP
+      name: webhooks
+    {{- if .Values.service.metricsPort }}
+    - port: {{ .Values.service.metricsPort }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+    {{- end }}
+  selector:
+    {{- include "hookshot.selectorLabels" . | nindent 4 }}
