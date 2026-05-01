@@ -1,0 +1,20 @@
+{{- range $name, $cfg := .Values.persistence }}
+{{- if $cfg.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "audiobookshelf.fullname" $ }}-{{ $name }}
+  labels:
+    {{- include "audiobookshelf.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ $cfg.accessMode | default "ReadWriteOnce" }}
+  {{- if $cfg.storageClass }}
+  storageClassName: {{ $cfg.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ $cfg.size }}
+{{- end }}
+{{- end }}
