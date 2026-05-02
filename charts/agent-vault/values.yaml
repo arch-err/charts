@@ -1,0 +1,99 @@
+# Default values for agent-vault.
+# Upstream: https://github.com/Infisical/agent-vault
+
+replicaCount: 1
+
+image:
+  repository: infisical/agent-vault
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Pod-level security context. Container runs as a non-root user upstream;
+# tighten further at deploy-time if needed.
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  # 14321 = HTTP API + web UI. 14322 = TLS forward-proxy.
+  uiPort: 14321
+  proxyPort: 14322
+
+# Persistent storage for /data. Holds vault state (encrypted credentials,
+# CA private key, audit logs). Master password unlocks it.
+persistence:
+  enabled: true
+  storageClass: ""  # empty = cluster default
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  # Existing PVC name to use instead of creating one. Leave empty to create.
+  existingClaim: ""
+
+# Master password secret. Required for non-interactive boot.
+# Provide via an existing Secret containing key AGENT_VAULT_MASTER_PASSWORD.
+# Do NOT inline the value here — use sops-secrets-operator or similar.
+masterPassword:
+  existingSecret: ""        # name of an existing Secret in this namespace
+  secretKey: AGENT_VAULT_MASTER_PASSWORD
+
+# Public URL the vault advertises in emails / invites. Should match how
+# users reach the UI from outside the cluster.
+externalAddr: ""  # e.g. https://agent-vault.apps.home
+
+# Extra environment variables (non-secret). See:
+#   https://github.com/Infisical/agent-vault/blob/main/.env.example
+env: {}
+  # AGENT_VAULT_LOG_LEVEL: info
+  # AGENT_VAULT_ALLOW_PRIVATE_RANGES: "true"   # required if proxying to RFC1918
+  # AGENT_VAULT_TRUSTED_PROXIES: "10.0.0.0/8"
+  # AGENT_VAULT_LOGS_MAX_AGE_HOURS: "2160"     # 90 days
+  # AGENT_VAULT_RATELIMIT_PROFILE: default
+
+# Extra environment variables sourced from existing Secrets / ConfigMaps.
+envFrom: []
+  # - secretRef:
+  #     name: agent-vault-smtp
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
+
+livenessProbe:
+  tcpSocket:
+    port: ui
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+readinessProbe:
+  tcpSocket:
+    port: ui
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# ── Gateway / TLS ───────────────────────────────────────────────────────────
+# The chart can emit a TLSRoute for the proxy port (port 14322 served as TLS
+# directly by agent-vault — must NOT be terminated upstream, since clients
+# need to see the AV-CA-minted per-host certs).
+#
+# UI HTTPRoute is intentionally NOT generated here — keep it in the platform
+# chart (httproutes.yaml) so it follows the existing apps-gateway convention.
+tlsRoute:
+  enabled: false
+  # Hostname that clients put in HTTPS_PROXY (must resolve to the gateway IP).
+  hostname: ""              # e.g. agent-vault-proxy.apps.home
+  parentRef:
+    name: apps              # gateway name
+    namespace: gateway-system
+    sectionName: ""         # listener name on the gateway, e.g. passthrough-agent-vault-proxy

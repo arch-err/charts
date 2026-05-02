@@ -1,0 +1,21 @@
+{{- if .Values.tlsRoute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: {{ include "agent-vault.fullname" . }}-proxy
+  labels:
+    {{- include "agent-vault.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ .Values.tlsRoute.parentRef.name }}
+      namespace: {{ .Values.tlsRoute.parentRef.namespace }}
+      {{- if .Values.tlsRoute.parentRef.sectionName }}
+      sectionName: {{ .Values.tlsRoute.parentRef.sectionName }}
+      {{- end }}
+  hostnames:
+    - {{ .Values.tlsRoute.hostname }}
+  rules:
+    - backendRefs:
+        - name: {{ include "agent-vault.fullname" . }}
+          port: {{ .Values.service.proxyPort }}
+{{- end }}

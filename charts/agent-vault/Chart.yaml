@@ -1,0 +1,23 @@
+apiVersion: v2
+name: agent-vault
+description: |
+  Infisical Agent Vault — HTTPS forward proxy that injects upstream credentials
+  on behalf of AI agents and interactive shells. Real secrets never leave the
+  vault; actors hold revocable handles.
+
+  Upstream: https://github.com/Infisical/agent-vault
+type: application
+version: 0.1.0
+appVersion: "0.14.0"
+home: https://github.com/Infisical/agent-vault
+sources:
+  - https://github.com/Infisical/agent-vault
+keywords:
+  - secrets
+  - vault
+  - proxy
+  - credentials
+  - ai-agents
+maintainers:
+  - name: arch-err
+    url: https://github.com/arch-err
