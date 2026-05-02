@@ -1,5 +1,30 @@
 apiVersion: v1
 entries:
+  agent-vault:
+  - apiVersion: v2
+    appVersion: 0.14.0
+    created: "2026-05-02T12:55:03.446072819Z"
+    description: 'Infisical Agent Vault — HTTPS forward proxy that injects upstream
+      credentials on behalf of AI agents and interactive shells. Real secrets never
+      leave the vault; actors hold revocable handles.  Upstream: https://github.com/Infisical/agent-vault '
+    digest: 16e9b6c368c4fe1942b33601aaa06ce04071387a84a0bd1eda052ad6cbd8cf1e
+    home: https://github.com/Infisical/agent-vault
+    keywords:
+    - secrets
+    - vault
+    - proxy
+    - credentials
+    - ai-agents
+    maintainers:
+    - name: arch-err
+      url: https://github.com/arch-err
+    name: agent-vault
+    sources:
+    - https://github.com/Infisical/agent-vault
+    type: application
+    urls:
+    - https://github.com/arch-err/charts/releases/download/agent-vault-0.1.0/agent-vault-0.1.0.tgz
+    version: 0.1.0
   audiobookshelf:
   - apiVersion: v2
     appVersion: latest
@@ -212,4 +237,4 @@ entries:
     urls:
     - https://github.com/arch-err/charts/releases/download/n8n-1.13.4-fixed-port/n8n-1.13.4-fixed-port.tgz
     version: 1.13.4-fixed-port
-generated: "2026-05-01T21:08:06.1235495Z"
+generated: "2026-05-02T12:55:03.446093851Z"
