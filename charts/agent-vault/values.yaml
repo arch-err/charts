@@ -13,10 +13,21 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# Pod-level security context. Container runs as a non-root user upstream;
-# tighten further at deploy-time if needed.
-podSecurityContext: {}
-securityContext: {}
+# Restricted-PSS-compliant defaults. Upstream image runs as UID 65532 already.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
 
 service:
   type: ClusterIP
